@@ -1,0 +1,146 @@
+﻿@page
+@model Portal_projeto_cobrancas.Pages.IndexModel
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Registros de Cobrança";
+}
+
+
+<div class="header">
+    <h1>Bem-vindo ao Meu Portal de Cobranças </h1>
+</div>
+
+<div class="card">
+    <h2>Portal de Cobranças</h2>
+    <p>Visualize a lista de cobranças abaixo:</p>
+
+</div>
+
+<div class="container mt-4">
+
+    <!-- TÍTULO -->
+    <h2 class="mb-3 text-center">📄 Registros de Cobrança</h2>
+
+    <!-- TOTAL DE REGISTROS -->
+    <p class="text-muted text-center">
+        Total de registros: <strong>@Model.ListaRegistros.Count</strong>
+    </p>
+
+    <!-- BARRA DE BUSCA -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <input type="text"
+                   id="searchInput"
+                   class="form-control"
+                   placeholder="Pesquisar por nome, empresa, status..."
+                   onkeyup="filtrarTabela()" />
+        </div>
+    </div>
+
+    <style>
+
+
+        }
+        /* Zebra nas linhas */
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+
+        /* Hover suave */
+        .table-hover tbody tr:hover {
+            background-color: #d1f0f0;
+        }
+
+        /* Padding extra nas colunas */
+        th, td {
+            padding: 12px 15px;
+        }
+
+        /* Cabeçalho fixo ao rolar */
+        .table-responsive {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+            .table-responsive thead th {
+                position: sticky;
+                top: 0;
+                background-color: #343a40;
+                color: white;
+            }
+    </style>
+    
+    <h5>Registros de Cobrança</h5>
+
+
+    <!-- TABELA -->
+    <div class="table-responsive">
+        <table class="table table-striped table-hover table-bordered align-middle">
+            <thead class="table-dark">
+                                    
+                <tr>
+                    <th style="width: 50px; text-align:center;">ID</th>
+                    <th style="width: 80px; text-align:center;">Tipo</th>
+                    <th style="min-width: 200px; padding-left: 15px; padding-right: 15px;">Empresa</th>
+                    <th style="min-width: 300px; padding-left: 15px; padding-right: 15px;">Nome</th>
+                    <th style="width: 120px; text-align:center;">Vencimento</th>
+                    <th style="width: 100px; text-align:right;">Valor</th>
+                    <th style="width: 100px; text-align:right;">Saldo</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model.ListaRegistros)
+                {
+                    <tr>
+                        <td style="text-align:center;">@item.Id</td>
+                        <td style="text-align:center;">@item.Tipo</td>
+                        <td style="padding-left: 15px; padding-right: 15px;">@item.Company</td>
+                        <td style="padding-left: 15px; padding-right: 15px;">@item.Nome</td>
+                        <td style="text-align:center;">@item.Vencto?.ToString("dd/MM/yyyy")</td>
+                        <td style="text-align:right;">@item.VrLiquido.GetValueOrDefault().ToString("C2")</td>
+                        <td style="text-align:right;">
+                            <span class="@(item.Saldo > 0 ? "text-danger fw-bold" : "text-success")">
+                                @item.Saldo.GetValueOrDefault().ToString("C2")
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge @(item.StatusBoleto == "Pago" ? "bg-success" : "bg-warning text-dark")">
+                                @item.StatusBoleto
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+<!-- SCRIPT DE BUSCA -->
+<script>
+    function filtrarTabela() {
+        var input = document.getElementById("searchInput");
+        var filtro = input.value.toUpperCase();
+        var tabela = document.querySelector("table");
+        var linhas = tabela.getElementsByTagName("tr");
+
+        for (var i = 1; i < linhas.length; i++) {
+            var colunas = linhas[i].getElementsByTagName("td");
+            var achou = false;
+
+            for (var j = 0; j < colunas.length; j++) {
+                if (colunas[j].innerText.toUpperCase().indexOf(filtro) > -1) {
+                    achou = true;
+                    break;
+                }
+            }
+
+            linhas[i].style.display = achou ? "" : "none";
+        }
+    }
+</script>
+
+
+
